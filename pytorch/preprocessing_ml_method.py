@@ -1,5 +1,6 @@
 import os
 import cv2
+import sys
 import math
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -27,5 +28,3 @@ def load_imgs(data_path, target_size):
 def train_test_split_func(x, y, size, random):
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = size, random_state = random)
     return x_train, x_test, y_train, y_test
-
-

@@ -1,4 +1,5 @@
 import os
+import time
 import torch
 import numpy as np
 import torch.nn as nn
@@ -81,11 +82,22 @@ with torch.no_grad():
 
 print(f"Test Accuracy: {100 * correct / total:.2f}%")
 
+# Plot Confusion Matrix
 cm = confusion_matrix(all_labels, all_preds)
 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=classes)
 
-plt.figure(figsize=(8,6))
 disp.plot(cmap=plt.cm.Blues, xticks_rotation=45)
 plt.title("Confusion Matrix")
 plt.tight_layout()
 plt.show()
+
+
+# if not os.path.exist('model.oth'):
+#     torch.save(model, "model.pth")
+#     print('Model Saved!')
+# else:
+#     print("File Exist, Model not saved.")
+
+filename = f"Model_{int(time.time())}.pth"
+torch.save(model, filename)
+print(f"Model save as {filename}!")

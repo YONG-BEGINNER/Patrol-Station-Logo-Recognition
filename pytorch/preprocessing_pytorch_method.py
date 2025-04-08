@@ -24,4 +24,4 @@ def load_data(data_path, transform):
         print("Class Names:", [dataset.classes[i] for i in labels])  # Convert indices to class names
         break  # Only check one batch
     
-    return train_loader, test_dataset, dataset.classes
+    return train_loader, test_loader, dataset.classes

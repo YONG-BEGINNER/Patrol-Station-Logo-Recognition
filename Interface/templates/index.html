@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset = "UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Petrol Station Logo Classification</title>
+    </head>
+
+    <body>
+        <h1>Upload an Image for Prediction</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="image" accept="image/*" required>
+            <button type="submit">Upload</button>
+        </form>
+
+        {% if prediction is not none %}
+        <h2>Predicted Class: {{prediction}}</h2>
+        {% endif %}
+    </body>
+</html>

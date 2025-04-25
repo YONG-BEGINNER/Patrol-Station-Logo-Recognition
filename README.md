@@ -17,5 +17,5 @@ The second purpose for this repository is for author to recap the knolowdg about
 `pytorch_begineer` - This is a file that actual done the **Pre-Processing** and **Model Training**.  
 The purpose of this repository it for the author to record and perform version control in his self-learning process.  
 
-## From Author
+## From Author👤
 Feel free to leave any comments or suggestions for improvement by adding `issues`. I'd really appreciate any tips to help me improve my coding skills!! I'm Improving while doing job not related to AI. Please leave your comment to helping me improve in AI Related Field Skill.

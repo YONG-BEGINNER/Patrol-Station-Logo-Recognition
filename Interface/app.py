@@ -6,8 +6,8 @@ import torch
 import threading
 from PIL import Image
 from torchvision import transforms
-from Pytorch.CNN_Model import SimpleCNN
-from Pytorch.pytorch_beginner import num_classes_return
+from CNN_Model import SimpleCNN
+from pytorch_beginner import num_classes_return
 from flask import Flask, render_template, request, jsonify, after_this_request
 
 # Define The source of the data to get the labeling

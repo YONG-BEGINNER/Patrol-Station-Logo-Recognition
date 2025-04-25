@@ -7,7 +7,7 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 from CNN_Model import SimpleCNN
 from torchvision import transforms
-from preprocessing_pytorch_method import load_data
+from Pytorch.data_loader_pytorch import load_data
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 data_path = "./Crop"
@@ -27,7 +27,7 @@ def num_classes_return(data_path_app):
     _, _, classes = load_data(data_path_app, transform)
 
     num_classes = len(classes)
-    return num_classes
+    return num_classes, classes
 
 if __name__ == "__main__":
 

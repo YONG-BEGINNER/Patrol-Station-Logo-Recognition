@@ -17,11 +17,8 @@ def load_data(data_path, transform):
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
-    print("Class Labels: ", dataset.classes)
-
-    for images, labels in train_loader:
-        print("Labels in this batch:", labels.tolist())  # Print label indices
-        print("Class Names:", [dataset.classes[i] for i in labels])  # Convert indices to class names
-        break  # Only check one batch
+    print("Class Label to index:")
+    for label, idx in dataset.class_to_idx.items():
+        print(f"{label:<8}\t: {idx}")
     
     return train_loader, test_loader, dataset.classes

@@ -6,6 +6,7 @@ import torch
 import threading
 from PIL import Image
 from torchvision import transforms
+from torchvision.transforms import AutoAugment
 from CNN_Model import SimpleCNN
 from pytorch_beginner import num_classes_return
 from flask import Flask, render_template, request, jsonify, after_this_request
@@ -30,21 +31,22 @@ model_file = []
 for files in os.listdir('./'):
     if files.endswith('.pth'):
         model_file.append(files)
-print(model_file[0])
+        print(f"{model_file},")
+print(model_file[-1])
 
 # Initialize the Model architecture
 model = SimpleCNN(num_classes = num_class)
 # Load the pretrain model weight
-model.load_state_dict(torch.load(model_file[0], map_location=device))
+model.load_state_dict(torch.load(model_file[-1], map_location=device))
 # Set the model to evaluation mode
 model.eval()
 
 # Set the preprocessing that need to be used in the uploaded Images
-transform = transforms.Compose({
-    transforms.Resize((50,50)),
+transform = transforms.Compose([
+    transforms.Resize((50, 50)),
     transforms.ToTensor(),
-    transforms.Normalize(mean = [0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
-})
+    transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+])
 
 # Delete Local Temporary file after user upload to the website.
 def delete_image_later(image_path, delay):
@@ -58,12 +60,15 @@ def index():
     prediction = None
     filename = None
     image_path = None
+    confidence_score = None
+    img = None
+
     # When method is POST
     if request.method == "POST":
         # Get file from the form element named image
         img_file = request.files['image']
 
-        #Preprocessing Start
+        # Preprocessing Start
         img = Image.open(img_file.stream).convert("RGB")
         
         # Save image with a unique filename, for display purpose
@@ -79,15 +84,20 @@ def index():
         # Make Prediction
         with torch.no_grad():
             outputs = model(img)
+            probabilities = torch.nn.functional.softmax(outputs, dim=1)
+            confidence_score = torch.max(probabilities).item()
             _, predicted = torch.max(outputs, 1)
             prediction = classes_label[predicted.item()]
 
-        # Call the function to delete the image after pridiction finished
-        delete_image_later(image_path, delay=2)
-            
-        return render_template('index2.html',prediction=prediction, image_file=filename)
+        # Call the function to delete the image after prediction finished
+        delete_image_later(image_path, delay=10)
 
-    return render_template('index2.html', prediction=prediction)
+        # After processing, we will display the saved file using its filename
+        return render_template('index2.html', prediction=prediction, image_file=filename, confidence_score=confidence_score)
+
+    # Handle the page refresh scenario (GET request)
+    return render_template('index2.html', prediction=prediction, confidence_score=confidence_score)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

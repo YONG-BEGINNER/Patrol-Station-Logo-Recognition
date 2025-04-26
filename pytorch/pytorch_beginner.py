@@ -7,7 +7,7 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 from CNN_Model import SimpleCNN
 from torchvision import transforms
-from Pytorch.data_loader_pytorch import load_data
+from data_loader_pytorch import load_data
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 data_path = "./Crop"
@@ -19,6 +19,9 @@ def num_classes_return(data_path_app):
     # Set the preprocessing step that need to apply to the images
     transform = transforms.Compose([
         transforms.Resize((50,50)),
+        transforms.RandomRotation(20),
+        transforms.RandomHorizontalFlip(),
+        transforms.AutoAugment(policy=transforms.AutoAugmentPolicy.CIFAR10),
         transforms.ToTensor(),
         transforms.Normalize(mean = [0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
     ])
@@ -45,10 +48,10 @@ if __name__ == "__main__":
 
     model = SimpleCNN(num_classes)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
     # Define Epoch that want to be perform
-    for epoch in range(5):
+    for epoch in range(30):
         # Set the model to train state
         model.train()
 

@@ -9,7 +9,7 @@ from torchvision import transforms
 from torchvision.transforms import AutoAugment
 from CNN_Model import SimpleCNN
 from pytorch_beginner import num_classes_return
-from flask import Flask, render_template, request, jsonify, after_this_request
+from flask import Flask, render_template, request, session, redirect, url_for
 
 # Define The source of the data to get the labeling
 data_path = "./../Crop"
@@ -19,6 +19,8 @@ Upload_Folder = 'static/upload'
 os.makedirs(Upload_Folder, exist_ok=True)
 
 app = Flask(__name__)
+
+app.secret_key = 'Yym.1234'
 
 # Define class label
 num_class, classes_label = num_classes_return(data_path)
@@ -67,7 +69,7 @@ def index():
     if request.method == "POST":
         # Get file from the form element named image
         img_file = request.files['image']
-
+        
         # Preprocessing Start
         img = Image.open(img_file.stream).convert("RGB")
         
@@ -92,11 +94,15 @@ def index():
         # Call the function to delete the image after prediction finished
         delete_image_later(image_path, delay=10)
 
-        # After processing, we will display the saved file using its filename
-        return render_template('index2.html', prediction=prediction, image_file=filename, confidence_score=confidence_score)
+                # Redirect to GET (to avoid refresh issue)
+        return redirect(url_for('index'))
 
-    # Handle the page refresh scenario (GET request)
-    return render_template('index2.html', prediction=prediction, confidence_score=confidence_score)
+    # This block runs only when method is GET
+    prediction = session.pop('prediction', None)
+    confidence_score = session.pop('confidence_score', None)
+    filename = session.pop('filename', None)
+
+    return render_template('index2.html', prediction=prediction, image_file=filename, confidence_score=confidence_score)
 
 
 if __name__ == '__main__':

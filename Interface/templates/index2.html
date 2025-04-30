@@ -57,10 +57,12 @@
 
                 <div class="card-body">
                     {% if prediction is not none %}
-                    <p class="card-text fs-5">Prediction Class: {{prediction}}</p>
-                    <p class="card-text fs-5">Similarity: {{(confidence_score * 100) | round(2)}}%</p>
+                        <p class="card-text fs-5">Prediction Class: {{prediction}}</p>
+                        {%if confidence_score is not none %}
+                            <p class="card-text fs-5">Similarity: {{(confidence_score * 100) | round(2)}}%</p>
+                        {%endif%}
                     {%else%}
-                    <p class="text-muted text-uppercase fs-3 card-text">Prediction Class: Please Choose an Image</p>
+                        <p class="text-muted text-uppercase fs-3 card-text">Prediction Class: Please Choose an Image</p>
                     {%endif%}
                 </div>
             </div>

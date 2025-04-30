@@ -19,7 +19,6 @@ Upload_Folder = 'static/upload'
 os.makedirs(Upload_Folder, exist_ok=True)
 
 app = Flask(__name__)
-
 app.secret_key = 'Yym.1234'
 
 # Define class label
@@ -29,11 +28,7 @@ num_class, classes_label = num_classes_return(data_path)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Select the latest trained model
-model_file = []
-for files in os.listdir('./'):
-    if files.endswith('.pth'):
-        model_file.append(files)
-        print(f"{model_file},")
+model_file = [f for f in os.listdir('./') if f.endswith('.pth')]
 print(model_file[-1])
 
 # Initialize the Model architecture
@@ -58,17 +53,13 @@ def delete_image_later(image_path, delay):
 # Define the route and method assigned to it
 @app.route("/", methods=["GET", "POST"])
 def index():
-    # Initialize Variable
-    prediction = None
-    filename = None
-    image_path = None
-    confidence_score = None
-    img = None
-
     # When method is POST
     if request.method == "POST":
         # Get file from the form element named image
         img_file = request.files['image']
+
+        if not img_file:
+            return redirect(url_for('index'))
         
         # Preprocessing Start
         img = Image.open(img_file.stream).convert("RGB")
@@ -94,7 +85,11 @@ def index():
         # Call the function to delete the image after prediction finished
         delete_image_later(image_path, delay=10)
 
-                # Redirect to GET (to avoid refresh issue)
+        session['prediction'] = prediction
+        session['confidence'] = confidence_score
+        session['filename']  = filename
+
+        # Redirect to GET (to avoid refresh issue)
         return redirect(url_for('index'))
 
     # This block runs only when method is GET
